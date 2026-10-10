@@ -1,8 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scenes/rooms/room.gd" id="1"]
 [ext_resource type="Script" path="res://scenes/rooms/room_exit.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/lighthouse/lantern.tscn" id="3"]
+[ext_resource type="Texture2D" path="res://art/tiles/tile_stone_floor.png" id="tf"]
+[ext_resource type="Texture2D" path="res://art/tiles/tile_stone_wall.png" id="tw"]
+[ext_resource type="Texture2D" path="res://art/sprites/prop_stairs_down.png" id="ts"]
 
 [sub_resource type="RectangleShape2D" id="w0"]
 size = Vector2(640, 16)
@@ -22,10 +25,11 @@ size = Vector2(32, 32)
 [node name="LanternRoom" type="Node2D"]
 script = ExtResource("1")
 
-[node name="Floor" type="ColorRect" parent="."]
+[node name="Floor" type="TextureRect" parent="."]
 offset_right = 640.0
 offset_bottom = 360.0
-color = Color(0.290196, 0.333333, 0.470588, 1)
+texture = ExtResource("tf")
+stretch_mode = 1
 
 [node name="Walls" type="Node2D" parent="."]
 
@@ -33,6 +37,14 @@ color = Color(0.290196, 0.333333, 0.470588, 1)
 position = Vector2(320, 8)
 collision_layer = 1
 collision_mask = 0
+
+[node name="Texture" type="TextureRect" parent="Walls/Top"]
+offset_left = -320.0
+offset_top = -8.0
+offset_right = 320.0
+offset_bottom = 8.0
+texture = ExtResource("tw")
+stretch_mode = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Top"]
 shape = SubResource("w0")
@@ -42,6 +54,14 @@ position = Vector2(320, 352)
 collision_layer = 1
 collision_mask = 0
 
+[node name="Texture" type="TextureRect" parent="Walls/Bottom"]
+offset_left = -320.0
+offset_top = -8.0
+offset_right = 320.0
+offset_bottom = 8.0
+texture = ExtResource("tw")
+stretch_mode = 1
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Bottom"]
 shape = SubResource("w1")
 
@@ -50,6 +70,14 @@ position = Vector2(8, 180)
 collision_layer = 1
 collision_mask = 0
 
+[node name="Texture" type="TextureRect" parent="Walls/Left"]
+offset_left = -8.0
+offset_top = -180.0
+offset_right = 8.0
+offset_bottom = 180.0
+texture = ExtResource("tw")
+stretch_mode = 1
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Left"]
 shape = SubResource("w2")
 
@@ -57,6 +85,14 @@ shape = SubResource("w2")
 position = Vector2(632, 180)
 collision_layer = 1
 collision_mask = 0
+
+[node name="Texture" type="TextureRect" parent="Walls/Right"]
+offset_left = -8.0
+offset_top = -180.0
+offset_right = 8.0
+offset_bottom = 180.0
+texture = ExtResource("tw")
+stretch_mode = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Right"]
 shape = SubResource("w3")
@@ -77,3 +113,6 @@ shape = SubResource("exit")
 
 [node name="Lantern" parent="." instance=ExtResource("3")]
 position = Vector2(320, 180)
+
+[node name="Sprite" type="Sprite2D" parent="StairsDown"]
+texture = ExtResource("ts")
