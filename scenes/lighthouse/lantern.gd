@@ -1,12 +1,10 @@
 class_name Lantern
 extends Node2D
-## The lamp. Owns the FlameModel, burns oil while the night runs, and shows the flame.
+## The lamp. Shows and tends the night's flame (kept on Game, so it survives leaving the room).
 
 ## Emitted when the flame changes state.
 signal flame_state_changed(state: FlameModel.FlameState)
 
-const DEEP_NIGHT_START: float = 1440.0
-const DEEP_NIGHT_END: float = 1680.0
 const FLAME_COLORS: Dictionary[FlameModel.FlameState, Color] = {
 	FlameModel.FlameState.OUT: Color(0.172549, 0.207843, 0.329412, 1),
 	FlameModel.FlameState.EMBER: Color(0.784314, 0.501961, 0.172549, 1),
@@ -14,11 +12,10 @@ const FLAME_COLORS: Dictionary[FlameModel.FlameState, Color] = {
 	FlameModel.FlameState.BRIGHT: Color(1, 0.901961, 0.603922, 1),
 }
 
-var model: FlameModel = FlameModel.new()
+var model: FlameModel = null
 
 var _state: FlameModel.FlameState = FlameModel.FlameState.BRIGHT
 
-@onready var _clock: Node = get_node("/root/Clock")
 @onready var _flame: Polygon2D = $Flame
 @onready var _reservoir: Interactable = $Reservoir
 @onready var _wick: Interactable = $Wick
@@ -26,16 +23,14 @@ var _state: FlameModel.FlameState = FlameModel.FlameState.BRIGHT
 
 
 func _ready() -> void:
+	model = get_node("/root/Game").flame
 	_reservoir.interacted.connect(_on_reservoir_interacted)
 	_wick.interacted.connect(_on_wick_interacted)
 	_match.interacted.connect(_on_match_interacted)
 	_show_flame()
 
 
-func _process(delta: float) -> void:
-	if _clock.running:
-		var minutes: float = _clock.minutes
-		model.burn(delta, minutes >= DEEP_NIGHT_START and minutes < DEEP_NIGHT_END)
+func _process(_delta: float) -> void:
 	_show_flame()
 
 
