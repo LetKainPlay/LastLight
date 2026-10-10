@@ -12,7 +12,7 @@ signal hold_progressed(fraction: float)
 var _held: float = 0.0
 var _done: bool = false
 
-@onready var _prompt: Label = $Prompt
+@onready var _prompt: Sprite2D = $Prompt
 
 
 func _ready() -> void:

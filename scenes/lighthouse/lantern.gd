@@ -5,18 +5,17 @@ extends Node2D
 ## Emitted when the flame changes state.
 signal flame_state_changed(state: FlameModel.FlameState)
 
-const FLAME_COLORS: Dictionary[FlameModel.FlameState, Color] = {
-	FlameModel.FlameState.OUT: Color(0.172549, 0.207843, 0.329412, 1),
-	FlameModel.FlameState.EMBER: Color(0.784314, 0.501961, 0.172549, 1),
-	FlameModel.FlameState.STEADY: Color(0.94902, 0.705882, 0.254902, 1),
-	FlameModel.FlameState.BRIGHT: Color(1, 0.901961, 0.603922, 1),
+const FLAME_TEXTURES: Dictionary[FlameModel.FlameState, Texture2D] = {
+	FlameModel.FlameState.EMBER: preload("res://art/sprites/fx_flame_ember.png"),
+	FlameModel.FlameState.STEADY: preload("res://art/sprites/fx_flame_steady.png"),
+	FlameModel.FlameState.BRIGHT: preload("res://art/sprites/fx_flame_bright.png"),
 }
 
 var model: FlameModel = null
 
 var _state: FlameModel.FlameState = FlameModel.FlameState.BRIGHT
 
-@onready var _flame: Polygon2D = $Flame
+@onready var _flame: Sprite2D = $Flame
 @onready var _reservoir: Interactable = $Reservoir
 @onready var _wick: Interactable = $Wick
 @onready var _match: Interactable = $Match
@@ -37,8 +36,8 @@ func _process(_delta: float) -> void:
 func _show_flame() -> void:
 	var state: FlameModel.FlameState = model.get_state()
 	_flame.visible = state != FlameModel.FlameState.OUT
-	_flame.color = FLAME_COLORS[state]
-	_flame.scale = Vector2.ONE * (0.4 + 0.6 * model.brightness())
+	if state != FlameModel.FlameState.OUT:
+		_flame.texture = FLAME_TEXTURES[state]
 	if state != _state:
 		_state = state
 		flame_state_changed.emit(state)

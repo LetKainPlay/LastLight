@@ -22,6 +22,10 @@ window/stretch/aspect="keep"
 window/stretch/scale_mode="integer"
 window/handheld/orientation=0
 
+[gui]
+
+theme/custom_font="res://art/fonts/pixel_font.fnt"
+
 [rendering]
 textures/canvas_textures/default_texture_filter=0
 2d/snap/snap_2d_transforms_to_pixel=true

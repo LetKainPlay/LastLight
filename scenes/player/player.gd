@@ -12,12 +12,21 @@ const FOOTSTEP_DISTANCE: float = 14.0
 
 var facing: Facing = Facing.DOWN
 ## Carrying a full oil can from the barrel.
-var has_oil_can: bool = false
+var has_oil_can: bool = false:
+	set(value):
+		has_oil_can = value
+		if _oil_can != null:
+			_oil_can.visible = value
 
 var _walked: float = 0.0
 var _nearby: Interactable = null
 
 @onready var _visual: Node2D = $Visual
+@onready var _oil_can: Sprite2D = $Visual/OilCan
+
+
+func _ready() -> void:
+	_oil_can.visible = has_oil_can
 
 
 func _physics_process(delta: float) -> void:
