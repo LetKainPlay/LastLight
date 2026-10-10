@@ -5,6 +5,8 @@ extends Node
 const SPEED_FLAG: String = "--night-speed="
 
 var _label: Label = null
+## Looked up by path: `--check-only` cannot resolve autoload identifiers.
+var _clock: Node = null
 
 
 func _ready() -> void:
@@ -12,6 +14,7 @@ func _ready() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
+	_clock = get_node("/root/Clock")
 	_apply_speed_flag()
 	var layer: CanvasLayer = CanvasLayer.new()
 	layer.layer = 100
@@ -24,7 +27,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _label.visible:
 		_label.text = "%d fps  %s  x%.1f" % [
-			Engine.get_frames_per_second(), Clock.clock_text(), Clock.minutes_per_second]
+			Engine.get_frames_per_second(), _clock.clock_text(), _clock.minutes_per_second]
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -35,13 +38,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		KEY_F1:
 			_label.visible = not _label.visible
 		KEY_BRACKETLEFT:
-			Clock.minutes_per_second = maxf(Clock.minutes_per_second * 0.5, 0.25)
+			_clock.minutes_per_second = maxf(_clock.minutes_per_second * 0.5, 0.25)
 		KEY_BRACKETRIGHT:
-			Clock.minutes_per_second = minf(Clock.minutes_per_second * 2.0, 64.0)
+			_clock.minutes_per_second = minf(_clock.minutes_per_second * 2.0, 64.0)
 
 
 func _apply_speed_flag() -> void:
 	var args: PackedStringArray = OS.get_cmdline_args() + OS.get_cmdline_user_args()
 	for arg: String in args:
 		if arg.begins_with(SPEED_FLAG):
-			Clock.minutes_per_second = clampf(float(arg.trim_prefix(SPEED_FLAG)), 0.25, 64.0)
+			_clock.minutes_per_second = clampf(float(arg.trim_prefix(SPEED_FLAG)), 0.25, 64.0)
