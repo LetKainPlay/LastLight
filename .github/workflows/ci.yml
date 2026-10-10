@@ -37,6 +37,11 @@ jobs:
           mv ".ci/Godot_v${GODOT_VERSION}-stable_linux.x86_64" .ci/godot
           chmod +x .ci/godot
 
+      - name: Generated assets match the generator
+        run: |
+          pip install --quiet pillow
+          python3 tools/generate_assets.py --check
+
       - name: Godot version
         run: "$GODOT_BIN --version"
 
