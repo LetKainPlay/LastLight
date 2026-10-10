@@ -1,7 +1,8 @@
 [gd_scene load_steps=8 format=3]
 
-[ext_resource type="Script" path="res://scenes/rooms/room.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/rooms/keepers_quarters.gd" id="1"]
 [ext_resource type="Script" path="res://scenes/rooms/room_exit.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/lighthouse/interactable.tscn" id="3"]
 
 [sub_resource type="RectangleShape2D" id="w0"]
 size = Vector2(640, 16)
@@ -76,3 +77,11 @@ target_spawn = &"FromQuarters"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StairsUp"]
 shape = SubResource("exit")
+
+[node name="OilBarrel" parent="." instance=ExtResource("3")]
+position = Vector2(100, 100)
+hold_time = 2.0
+
+[node name="Body" type="Polygon2D" parent="OilBarrel"]
+color = Color(0.580392, 0.376471, 0.227451, 1)
+polygon = PackedVector2Array(-8, -10, 8, -10, 8, 10, -8, 10)

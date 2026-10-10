@@ -7,3 +7,5 @@ One line per decision: date, decision, reason.
 - 2026-10-10: autoloads Game, Clock, Debug (Sfx later); max 4.
 - 2026-10-10: greybox rooms are exactly 640x360 (no camera yet), floors are ColorRects, walls StaticBody2D on physics layer 1; room exits are Area2D on layer 4 (trigger).
 - 2026-10-10: player is a top-down 4-direction walker for the greybox; revisit when AGENT_07 camera/stairs are built.
+- 2026-10-10: greybox match for relighting sits at the lantern (spec says quarters table); move in T13. A relight needs oil; adding oil alone does not relight.
+- 2026-10-10: one oil can = one full reservoir (add_oil(1.0)); barrel holds 4 cans.
