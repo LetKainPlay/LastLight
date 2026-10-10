@@ -55,3 +55,10 @@ func trim_wick() -> void:
 ## Strike a match. Only works with oil in the reservoir.
 func relight() -> void:
 	lit = oil > 0.0
+
+
+## Back to a full tank and a fresh wick.
+func reset() -> void:
+	oil = 1.0
+	wick_wear = 0.0
+	lit = true
