@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/lighthouse/lantern.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/lighthouse/interactable.tscn" id="2"]
+
+[node name="Lantern" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Lens" type="Polygon2D" parent="."]
+color = Color(0.580392, 0.815686, 0.815686, 1)
+polygon = PackedVector2Array(-16, -28, 16, -28, 28, -16, 28, 16, 16, 28, -16, 28, -28, 16, -28, -16)
+
+[node name="Flame" type="Polygon2D" parent="."]
+color = Color(0.94902, 0.705882, 0.254902, 1)
+polygon = PackedVector2Array(0, -18, 8, 6, 0, 12, -8, 6)
+
+[node name="Reservoir" parent="." instance=ExtResource("2")]
+position = Vector2(-70, 50)
+hold_time = 1.5
+
+[node name="Wick" parent="." instance=ExtResource("2")]
+position = Vector2(0, 50)
+hold_time = 1.2
+
+[node name="Match" parent="." instance=ExtResource("2")]
+position = Vector2(70, 50)
+hold_time = 1.0

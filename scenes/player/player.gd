@@ -11,6 +11,8 @@ const SPEED: float = 60.0
 const FOOTSTEP_DISTANCE: float = 14.0
 
 var facing: Facing = Facing.DOWN
+## Carrying a full oil can from the barrel.
+var has_oil_can: bool = false
 
 var _walked: float = 0.0
 var _nearby: Interactable = null

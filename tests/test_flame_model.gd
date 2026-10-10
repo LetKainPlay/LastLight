@@ -11,6 +11,7 @@ func _init() -> void:
 	_check_state(1.0, 0.0, FlameModel.FlameState.BRIGHT)
 	_check_state(1.0, 1.0, FlameModel.FlameState.STEADY)
 	_check_clamped()
+	_check_relight()
 	quit(1 if _failed else 0)
 
 
@@ -40,3 +41,19 @@ func _check_clamped() -> void:
 	if model.wick_wear != 0.0:
 		_failed = true
 		printerr("FAIL trim did not reset wear")
+
+
+func _check_relight() -> void:
+	var model: FlameModel = FlameModel.new()
+	model.burn(9999.0)
+	if model.get_state() != FlameModel.FlameState.OUT:
+		_failed = true
+		printerr("FAIL burnt-out flame is not OUT")
+	model.add_oil(1.0)
+	if model.get_state() != FlameModel.FlameState.OUT:
+		_failed = true
+		printerr("FAIL adding oil relit the flame")
+	model.relight()
+	if model.get_state() != FlameModel.FlameState.BRIGHT:
+		_failed = true
+		printerr("FAIL match did not relight")
