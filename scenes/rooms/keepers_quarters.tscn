@@ -1,0 +1,186 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://scenes/rooms/keepers_quarters.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/rooms/room_exit.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/lighthouse/interactable.tscn" id="3"]
+[ext_resource type="Texture2D" path="res://art/tiles/tile_stone_floor.png" id="tf"]
+[ext_resource type="Texture2D" path="res://art/tiles/tile_stone_wall.png" id="tw"]
+[ext_resource type="Texture2D" path="res://art/sprites/prop_stairs_up.png" id="ts"]
+[ext_resource type="Texture2D" path="res://art/sprites/prop_oil_barrel.png" id="tb"]
+[ext_resource type="Texture2D" path="res://art/sprites/prop_stove.png" id="p1"]
+[ext_resource type="Texture2D" path="res://art/sprites/prop_bed.png" id="p2"]
+[ext_resource type="Texture2D" path="res://art/sprites/prop_table.png" id="p3"]
+[ext_resource type="Texture2D" path="res://art/sprites/prop_window.png" id="p4"]
+
+[sub_resource type="RectangleShape2D" id="c1"]
+size = Vector2(26, 20)
+
+[sub_resource type="RectangleShape2D" id="c2"]
+size = Vector2(38, 22)
+
+[sub_resource type="RectangleShape2D" id="c3"]
+size = Vector2(38, 18)
+
+[sub_resource type="RectangleShape2D" id="w0"]
+size = Vector2(640, 16)
+
+[sub_resource type="RectangleShape2D" id="w1"]
+size = Vector2(640, 16)
+
+[sub_resource type="RectangleShape2D" id="w2"]
+size = Vector2(16, 360)
+
+[sub_resource type="RectangleShape2D" id="w3"]
+size = Vector2(16, 360)
+
+[sub_resource type="RectangleShape2D" id="exit"]
+size = Vector2(32, 32)
+
+[node name="KeepersQuarters" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Floor" type="TextureRect" parent="."]
+offset_right = 640.0
+offset_bottom = 360.0
+texture = ExtResource("tf")
+stretch_mode = 1
+
+[node name="Walls" type="Node2D" parent="."]
+
+[node name="Top" type="StaticBody2D" parent="Walls"]
+position = Vector2(320, 8)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Texture" type="TextureRect" parent="Walls/Top"]
+offset_left = -320.0
+offset_top = -8.0
+offset_right = 320.0
+offset_bottom = 8.0
+texture = ExtResource("tw")
+stretch_mode = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Top"]
+shape = SubResource("w0")
+
+[node name="Bottom" type="StaticBody2D" parent="Walls"]
+position = Vector2(320, 352)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Texture" type="TextureRect" parent="Walls/Bottom"]
+offset_left = -320.0
+offset_top = -8.0
+offset_right = 320.0
+offset_bottom = 8.0
+texture = ExtResource("tw")
+stretch_mode = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Bottom"]
+shape = SubResource("w1")
+
+[node name="Left" type="StaticBody2D" parent="Walls"]
+position = Vector2(8, 180)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Texture" type="TextureRect" parent="Walls/Left"]
+offset_left = -8.0
+offset_top = -180.0
+offset_right = 8.0
+offset_bottom = 180.0
+texture = ExtResource("tw")
+stretch_mode = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Left"]
+shape = SubResource("w2")
+
+[node name="Right" type="StaticBody2D" parent="Walls"]
+position = Vector2(632, 180)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Texture" type="TextureRect" parent="Walls/Right"]
+offset_left = -8.0
+offset_top = -180.0
+offset_right = 8.0
+offset_bottom = 180.0
+texture = ExtResource("tw")
+stretch_mode = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Right"]
+shape = SubResource("w3")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="Start" type="Marker2D" parent="Spawns"]
+position = Vector2(320, 260)
+
+[node name="FromLantern" type="Marker2D" parent="Spawns"]
+position = Vector2(520, 260)
+
+[node name="StairsUp" type="Area2D" parent="."]
+position = Vector2(580, 200)
+script = ExtResource("2")
+target_room = &"lantern_room"
+target_spawn = &"FromQuarters"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StairsUp"]
+shape = SubResource("exit")
+
+[node name="Sprite" type="Sprite2D" parent="StairsUp"]
+texture = ExtResource("ts")
+
+[node name="OilBarrel" parent="." instance=ExtResource("3")]
+position = Vector2(100, 100)
+hold_time = 2.0
+
+[node name="Body" type="Sprite2D" parent="OilBarrel"]
+texture = ExtResource("tb")
+offset = Vector2(0, -2)
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Stove" type="StaticBody2D" parent="Props"]
+position = Vector2(560, 64)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Stove"]
+texture = ExtResource("p1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Props/Stove"]
+position = Vector2(0, 4)
+shape = SubResource("c1")
+
+[node name="Bed" type="StaticBody2D" parent="Props"]
+position = Vector2(70, 300)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Bed"]
+texture = ExtResource("p2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Props/Bed"]
+position = Vector2(0, 2)
+shape = SubResource("c2")
+
+[node name="Table" type="StaticBody2D" parent="Props"]
+position = Vector2(320, 310)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Table"]
+texture = ExtResource("p3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Props/Table"]
+position = Vector2(0, 4)
+shape = SubResource("c3")
+
+[node name="WindowA" type="Sprite2D" parent="Props"]
+position = Vector2(200, 38)
+texture = ExtResource("p4")
+
+[node name="WindowB" type="Sprite2D" parent="Props"]
+position = Vector2(440, 38)
+texture = ExtResource("p4")

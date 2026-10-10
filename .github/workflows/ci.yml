@@ -1,0 +1,96 @@
+name: ci
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.7.2"
+  GODOT_BIN: ${{ github.workspace }}/.ci/godot
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: .ci/godot
+          key: godot-${{ env.GODOT_VERSION }}-linux-x86_64
+
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .ci
+          curl -fsSL -o .ci/godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q .ci/godot.zip -d .ci
+          mv ".ci/Godot_v${GODOT_VERSION}-stable_linux.x86_64" .ci/godot
+          chmod +x .ci/godot
+
+      - name: Generated assets match the generator
+        run: |
+          pip install --quiet pillow
+          python3 tools/generate_assets.py --check
+
+      - name: Godot version
+        run: "$GODOT_BIN --version"
+
+      - name: Cache import data
+        uses: actions/cache@v4
+        with:
+          path: .godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('**/*.import', 'project.godot') }}
+          restore-keys: godot-import-${{ env.GODOT_VERSION }}-
+
+      - name: Import project
+        run: |
+          # first import can exit non-zero on a benign class cache message; the checks below are authoritative
+          "$GODOT_BIN" --headless --path . --import || true
+
+      - name: Parse-check all scripts
+        run: |
+          status=0
+          while IFS= read -r -d '' f; do
+            if ! "$GODOT_BIN" --headless --path . --check-only --script "res://$f"; then
+              echo "::error file=$f::GDScript parse check failed"
+              status=1
+            fi
+          done < <(find scripts scenes tests -name '*.gd' -print0 2>/dev/null)
+          exit $status
+
+      - name: Project checks (scenes, display, typing, palette, naming)
+        run: |
+          "$GODOT_BIN" --headless --path . --script res://tests/run_checks.gd 2>&1 | tee checks.log
+          test "${PIPESTATUS[0]}" -eq 0
+
+      - name: Unit tests
+        run: |
+          shopt -s nullglob
+          for t in tests/test_*.gd; do
+            echo "--- $t"
+            "$GODOT_BIN" --headless --path . --script "res://$t"
+          done
+
+      - name: Smoke boot main scene (300 frames)
+        run: |
+          "$GODOT_BIN" --headless --path . --quit-after 300 2>&1 | tee boot.log
+          ! grep -E "^(ERROR|SCRIPT ERROR|USER ERROR)" boot.log
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs
+          path: |
+            checks.log
+            boot.log
